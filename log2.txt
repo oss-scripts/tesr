@@ -1,0 +1,554 @@
+export CUDA_VISIBLE_DEVICES=0,1
+export NCCL_DEBUG=INFO
+export NCCL_DEBUG_SUBSYS=ALL
+export OMP_NUM_THREADS=1
+export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
+
+LOG=/tmp/vllm_gemma3_tp2.log
+vllm serve google/gemma-3-27b-it \
+  --max-model-len 20000 \
+  --gpu-memory-utilization 0.9 \
+  --port 8005 \
+  --dtype auto \
+  --quantization fp8 \
+  --tensor-parallel-size 2 \
+  --pipeline-parallel-size 1 \
+  2>&1 | tee $LOG
+INFO 09-14 10:48:46 [__init__.py:216] Automatically detected platform cuda.
+(APIServer pid=3978) INFO 09-14 10:48:48 [api_server.py:1896] vLLM API server version 0.10.2
+(APIServer pid=3978) INFO 09-14 10:48:48 [utils.py:328] non-default args: {'model_tag': 'google/gemma-3-27b-it', 'port': 8005, 'model': 'google/gemma-3-27b-it', 'max_model_len': 20000, 'quantization': 'fp8', 'tensor_parallel_size': 2}
+(APIServer pid=3978) INFO 09-14 10:48:53 [__init__.py:742] Resolved architecture: Gemma3ForConditionalGeneration
+(APIServer pid=3978) `torch_dtype` is deprecated! Use `dtype` instead!
+(APIServer pid=3978) INFO 09-14 10:48:53 [__init__.py:1815] Using max model len 20000
+(APIServer pid=3978) INFO 09-14 10:48:53 [scheduler.py:222] Chunked prefill is enabled with max_num_batched_tokens=2048.
+(APIServer pid=3978) WARNING 09-14 10:48:53 [_ipex_ops.py:16] Import error msg: No module named 'intel_extension_for_pytorch'
+INFO 09-14 10:48:59 [__init__.py:216] Automatically detected platform cuda.
+(EngineCore_DP0 pid=3999) INFO 09-14 10:49:00 [core.py:654] Waiting for init message from front-end.
+(EngineCore_DP0 pid=3999) INFO 09-14 10:49:00 [core.py:76] Initializing a V1 LLM engine (v0.10.2) with config: model='google/gemma-3-27b-it', speculative_config=None, tokenizer='google/gemma-3-27b-it', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=20000, download_dir=None, load_format=auto, tensor_parallel_size=2, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=fp8, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, decoding_config=DecodingConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_backend=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=google/gemma-3-27b-it, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":1,"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+(EngineCore_DP0 pid=3999) INFO 09-14 10:49:00 [shm_broadcast.py:289] vLLM message queue communication handle: Handle(local_reader_ranks=[0, 1], buffer_handle=(2, 16777216, 10, 'psm_65947e92'), local_subscribe_addr='ipc:///tmp/773620a8-e5d4-466e-8f58-c51f46cd97c2', remote_subscribe_addr=None, remote_addr_ipv6=False)
+INFO 09-14 10:49:03 [__init__.py:216] Automatically detected platform cuda.
+INFO 09-14 10:49:03 [__init__.py:216] Automatically detected platform cuda.
+INFO 09-14 10:49:06 [shm_broadcast.py:289] vLLM message queue communication handle: Handle(local_reader_ranks=[0], buffer_handle=(1, 10485760, 10, 'psm_4df1fcf7'), local_subscribe_addr='ipc:///tmp/897632d8-8d27-46d7-bc30-ccbf1f23fccc', remote_subscribe_addr=None, remote_addr_ipv6=False)
+INFO 09-14 10:49:06 [shm_broadcast.py:289] vLLM message queue communication handle: Handle(local_reader_ranks=[0], buffer_handle=(1, 10485760, 10, 'psm_f3102667'), local_subscribe_addr='ipc:///tmp/430108c0-a713-4f0f-bfb6-e5f320c918ff', remote_subscribe_addr=None, remote_addr_ipv6=False)
+[W914 10:49:06.902272149 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[W914 10:49:06.902902747 ProcessGroupNCCL.cpp:981] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[Gloo] Rank 0 is connected to 1 peer ranks. Expected number of connected peer ranks is : 1
+[Gloo] Rank 1 is connected to 1 peer ranks. Expected number of connected peer ranks is : 1
+[Gloo] Rank 1 is connected to 1 peer ranks. Expected number of connected peer ranks is : 1
+[Gloo] Rank 0 is connected to 1 peer ranks. Expected number of connected peer ranks is : 1
+INFO 09-14 10:49:06 [__init__.py:1433] Found nccl from library libnccl.so.2
+INFO 09-14 10:49:06 [__init__.py:1433] Found nccl from library libnccl.so.2
+INFO 09-14 10:49:06 [pynccl.py:70] vLLM is using nccl==2.27.3
+INFO 09-14 10:49:06 [pynccl.py:70] vLLM is using nccl==2.27.3
+3740aca24e6c:4006:4006 [0] NCCL INFO Bootstrap: Using eth0:172.17.0.2<0>
+3740aca24e6c:4006:4006 [0] NCCL INFO cudaDriverVersion 12070
+3740aca24e6c:4006:4006 [0] NCCL INFO NCCL version 2.27.3+cuda12.9
+3740aca24e6c:4007:4007 [1] NCCL INFO cudaDriverVersion 12070
+3740aca24e6c:4006:4006 [0] NCCL INFO init.cc:1792 Cuda Host Alloc Size 4 pointer 0x756341e00000
+3740aca24e6c:4007:4007 [1] NCCL INFO Bootstrap: Using eth0:172.17.0.2<0>
+3740aca24e6c:4007:4007 [1] NCCL INFO NCCL version 2.27.3+cuda12.9
+3740aca24e6c:4007:4007 [1] NCCL INFO init.cc:1792 Cuda Host Alloc Size 4 pointer 0x7ef5abe00000
+3740aca24e6c:4007:4007 [1] NCCL INFO NET/Plugin: Could not find: libnccl-net.so. 
+3740aca24e6c:4007:4007 [1] NCCL INFO Failed to open libibverbs.so[.1]
+3740aca24e6c:4007:4007 [1] NCCL INFO NET/Socket : Using [0]eth0:172.17.0.2<0>
+3740aca24e6c:4007:4007 [1] NCCL INFO Initialized NET plugin Socket
+3740aca24e6c:4007:4007 [1] NCCL INFO Assigned NET plugin Socket to comm
+3740aca24e6c:4007:4007 [1] NCCL INFO Using network Socket
+3740aca24e6c:4007:4007 [1] NCCL INFO ncclCommInitRank comm 0x56446dcc1150 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId 2e000 commId 0xeaa49b3bca7c575b - Init START
+3740aca24e6c:4006:4006 [0] NCCL INFO NET/Plugin: Could not find: libnccl-net.so. 
+3740aca24e6c:4006:4006 [0] NCCL INFO Failed to open libibverbs.so[.1]
+3740aca24e6c:4006:4006 [0] NCCL INFO NET/Socket : Using [0]eth0:172.17.0.2<0>
+3740aca24e6c:4006:4006 [0] NCCL INFO Initialized NET plugin Socket
+3740aca24e6c:4006:4006 [0] NCCL INFO Assigned NET plugin Socket to comm
+3740aca24e6c:4006:4006 [0] NCCL INFO Using network Socket
+3740aca24e6c:4006:4006 [0] NCCL INFO ncclCommInitRank comm 0x619e6810afb0 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 1000 commId 0xeaa49b3bca7c575b - Init START
+3740aca24e6c:4007:4007 [1] NCCL INFO RAS network listening socket at 172.17.0.2<48675>
+3740aca24e6c:4006:4006 [0] NCCL INFO RAS network listening socket at 172.17.0.2<38655>
+3740aca24e6c:4007:4007 [1] NCCL INFO RAS client listening socket at ::1<28028>
+3740aca24e6c:4006:4006 [0] NCCL INFO RAS client listening socket at ::1<28028>
+3740aca24e6c:4006:4006 [0] NCCL INFO Mem Realloc old size 0, new size 256 pointer 0x619e6bd22060
+3740aca24e6c:4007:4007 [1] NCCL INFO Mem Realloc old size 0, new size 256 pointer 0x5644718adf50
+3740aca24e6c:4007:4007 [1] NCCL INFO Bootstrap timings total 0.005913 (create 0.000034, send 0.000093, recv 0.005378, ring 0.000019, delay 0.000000)
+3740aca24e6c:4006:4006 [0] NCCL INFO Bootstrap timings total 0.000600 (create 0.000020, send 0.000064, recv 0.000170, ring 0.000022, delay 0.000000)
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS thread started
+3740aca24e6c:4006:4053 [0] NCCL INFO Mem Realloc old size 0, new size 32 pointer 0x7562ec004e10
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS handling local addRanks request (old nRasPeers 0)
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS finished local processing of addRanks request (new nRasPeers 2, nRankPeers 2)
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS peer 0: socket 172.17.0.2<38655>, pid 4006, GPU 0 [this process]
+3740aca24e6c:4007:4054 [0] NCCL INFO RAS thread started
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS peer 1: socket 172.17.0.2<48675>, pid 4007, GPU 1
+3740aca24e6c:4007:4054 [0] NCCL INFO Mem Realloc old size 0, new size 32 pointer 0x7ef558004e10
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS peersHash 0xd3f45ab6a5df7b44
+3740aca24e6c:4007:4054 [0] NCCL INFO RAS handling local addRanks request (old nRasPeers 0)
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS link 1: opening new primary connection with 172.17.0.2<48675>
+3740aca24e6c:4007:4054 [0] NCCL INFO RAS finished local processing of addRanks request (new nRasPeers 2, nRankPeers 2)
+3740aca24e6c:4007:4054 [0] NCCL INFO RAS link 1: calculated deferred primary connection with 172.17.0.2<38655>
+3740aca24e6c:4007:4054 [0] NCCL INFO RAS link -1: calculated deferred primary connection with 172.17.0.2<38655>
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS link -1: calculated existing primary connection with 172.17.0.2<48675>
+3740aca24e6c:4007:4054 [0] NCCL INFO RAS new incoming socket connection from 172.17.0.2<41612>
+3740aca24e6c:4007:4054 [0] NCCL INFO RAS handling connInit from 172.17.0.2<41612> (version 22703, listeningAddr 172.17.0.2<38655>, peersHash 0xd3f45ab6a5df7b44, deadPeersHash 0x0)
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS handling connInitAck from 172.17.0.2<48675> (nack 0)
+3740aca24e6c:4006:4053 [0] NCCL INFO RAS established connection with 172.17.0.2<48675> (sendQ empty, experiencingDelays 0, startRetryTime 0.00s)
+3740aca24e6c:4006:4006 [0] NCCL INFO Topology detection : could not read /sys/devices/system/node/node-1/cpumap, ignoring
+3740aca24e6c:4007:4007 [1] NCCL INFO Topology detection : could not read /sys/devices/system/node/node-1/cpumap, ignoring
+3740aca24e6c:4006:4006 [0] NCCL INFO TOPO/NET : Importing network plugins to topology
+3740aca24e6c:4006:4006 [0] NCCL INFO Retrieving state for Socket
+3740aca24e6c:4006:4006 [0] NCCL INFO Initialized state 0 for Socket
+3740aca24e6c:4006:4006 [0] NCCL INFO NET/Socket : GPU Direct RDMA Disabled for HCA 0 'eth0'
+3740aca24e6c:4006:4006 [0] NCCL INFO ncclTopoPopulateNics : Filled eth0 in topo with pciPath=(null) keep=1 coll=(null)
+3740aca24e6c:4007:4007 [1] NCCL INFO TOPO/NET : Importing network plugins to topology
+3740aca24e6c:4007:4007 [1] NCCL INFO Retrieving state for Socket
+3740aca24e6c:4007:4007 [1] NCCL INFO Initialized state 0 for Socket
+3740aca24e6c:4007:4007 [1] NCCL INFO NET/Socket : GPU Direct RDMA Disabled for HCA 0 'eth0'
+3740aca24e6c:4007:4007 [1] NCCL INFO ncclTopoPopulateNics : Filled eth0 in topo with pciPath=(null) keep=1 coll=(null)
+3740aca24e6c:4006:4006 [0] NCCL INFO === System : maxBw 24.0 totalBw 24.0 ===
+3740aca24e6c:4006:4006 [0] NCCL INFO CPU/0-ffffffffffffff (1/2/-1)
+3740aca24e6c:4006:4006 [0] NCCL INFO + PCI[5000.0] - NIC/0-0
+3740aca24e6c:4006:4006 [0] NCCL INFO + PCI[24.0] - GPU/0-1000 (0)
+3740aca24e6c:4006:4006 [0] NCCL INFO + PCI[24.0] - GPU/0-2e000 (1)
+3740aca24e6c:4006:4006 [0] NCCL INFO ==========================================
+3740aca24e6c:4006:4006 [0] NCCL INFO GPU/0-1000 :GPU/0-1000 (0/5000.0/LOC) GPU/0-2e000 (2/24.0/PHB) CPU/0-ffffffffffffff (1/24.0/PHB) 
+3740aca24e6c:4006:4006 [0] NCCL INFO GPU/0-2e000 :GPU/0-1000 (2/24.0/PHB) GPU/0-2e000 (0/5000.0/LOC) CPU/0-ffffffffffffff (1/24.0/PHB) 
+3740aca24e6c:4006:4006 [0] NCCL INFO Pattern 4, crossNic 0, nChannels 2, bw 12.000000/12.000000, type PHB/PIX, sameChannels 1
+3740aca24e6c:4006:4006 [0] NCCL INFO  0 : GPU/0 GPU/1
+3740aca24e6c:4006:4006 [0] NCCL INFO  1 : GPU/0 GPU/1
+3740aca24e6c:4006:4006 [0] NCCL INFO Pattern 1, crossNic 0, nChannels 2, bw 20.000000/20.000000, type PHB/PIX, sameChannels 0
+3740aca24e6c:4006:4006 [0] NCCL INFO  0 : GPU/0 GPU/1
+3740aca24e6c:4006:4006 [0] NCCL INFO  1 : GPU/1 GPU/0
+3740aca24e6c:4007:4007 [1] NCCL INFO === System : maxBw 24.0 totalBw 24.0 ===
+3740aca24e6c:4007:4007 [1] NCCL INFO CPU/0-ffffffffffffff (1/2/-1)
+3740aca24e6c:4007:4007 [1] NCCL INFO + PCI[5000.0] - NIC/0-0
+3740aca24e6c:4007:4007 [1] NCCL INFO + PCI[24.0] - GPU/0-1000 (0)
+3740aca24e6c:4007:4007 [1] NCCL INFO + PCI[24.0] - GPU/0-2e000 (1)
+3740aca24e6c:4007:4007 [1] NCCL INFO ==========================================
+3740aca24e6c:4007:4007 [1] NCCL INFO GPU/0-1000 :GPU/0-1000 (0/5000.0/LOC) GPU/0-2e000 (2/24.0/PHB) CPU/0-ffffffffffffff (1/24.0/PHB) 
+3740aca24e6c:4007:4007 [1] NCCL INFO GPU/0-2e000 :GPU/0-1000 (2/24.0/PHB) GPU/0-2e000 (0/5000.0/LOC) CPU/0-ffffffffffffff (1/24.0/PHB) 
+3740aca24e6c:4007:4007 [1] NCCL INFO Pattern 4, crossNic 0, nChannels 2, bw 12.000000/12.000000, type PHB/PIX, sameChannels 1
+3740aca24e6c:4007:4007 [1] NCCL INFO  0 : GPU/0 GPU/1
+3740aca24e6c:4007:4007 [1] NCCL INFO  1 : GPU/0 GPU/1
+3740aca24e6c:4007:4007 [1] NCCL INFO Pattern 1, crossNic 0, nChannels 2, bw 20.000000/20.000000, type PHB/PIX, sameChannels 0
+3740aca24e6c:4007:4007 [1] NCCL INFO  0 : GPU/0 GPU/1
+3740aca24e6c:4007:4007 [1] NCCL INFO  1 : GPU/1 GPU/0
+3740aca24e6c:4006:4006 [0] NCCL INFO comm 0x619e6810afb0 rank 0 nRanks 2 nNodes 1 localRanks 2 localRank 0 MNNVL 0
+3740aca24e6c:4007:4007 [1] NCCL INFO comm 0x56446dcc1150 rank 1 nRanks 2 nNodes 1 localRanks 2 localRank 1 MNNVL 0
+3740aca24e6c:4007:4007 [1] NCCL INFO Tree 0 : 0 -> 1 -> -1/-1/-1
+3740aca24e6c:4006:4006 [0] NCCL INFO Tree 0 : -1 -> 0 -> 1/-1/-1
+3740aca24e6c:4007:4007 [1] NCCL INFO Tree 2 : 0 -> 1 -> -1/-1/-1
+3740aca24e6c:4006:4006 [0] NCCL INFO Tree 2 : -1 -> 0 -> 1/-1/-1
+3740aca24e6c:4007:4007 [1] NCCL INFO Tree 1 : -1 -> 1 -> 0/-1/-1
+3740aca24e6c:4006:4006 [0] NCCL INFO Tree 1 : 1 -> 0 -> -1/-1/-1
+3740aca24e6c:4007:4007 [1] NCCL INFO Tree 3 : -1 -> 1 -> 0/-1/-1
+3740aca24e6c:4006:4006 [0] NCCL INFO Tree 3 : 1 -> 0 -> -1/-1/-1
+3740aca24e6c:4006:4006 [0] NCCL INFO Channel 00/04 : 0 1
+3740aca24e6c:4006:4006 [0] NCCL INFO Channel 01/04 : 0 1
+3740aca24e6c:4007:4007 [1] NCCL INFO Ring 00 : 0 -> 1 -> 0
+3740aca24e6c:4006:4006 [0] NCCL INFO Channel 02/04 : 0 1
+3740aca24e6c:4006:4006 [0] NCCL INFO Channel 03/04 : 0 1
+3740aca24e6c:4007:4007 [1] NCCL INFO Ring 01 : 0 -> 1 -> 0
+3740aca24e6c:4007:4007 [1] NCCL INFO Ring 02 : 0 -> 1 -> 0
+3740aca24e6c:4006:4006 [0] NCCL INFO Ring 00 : 1 -> 0 -> 1
+3740aca24e6c:4007:4007 [1] NCCL INFO Ring 03 : 0 -> 1 -> 0
+3740aca24e6c:4006:4006 [0] NCCL INFO Ring 01 : 1 -> 0 -> 1
+3740aca24e6c:4007:4007 [1] NCCL INFO Trees [0] -1/-1/-1->1->0 [1] 0/-1/-1->1->-1 [2] -1/-1/-1->1->0 [3] 0/-1/-1->1->-1
+3740aca24e6c:4006:4006 [0] NCCL INFO Ring 02 : 1 -> 0 -> 1
+3740aca24e6c:4006:4006 [0] NCCL INFO Ring 03 : 1 -> 0 -> 1
+3740aca24e6c:4007:4007 [1] NCCL INFO P2P Chunksize set to 131072
+3740aca24e6c:4006:4006 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1 [1] -1/-1/-1->0->1 [2] 1/-1/-1->0->-1 [3] -1/-1/-1->0->1
+3740aca24e6c:4006:4006 [0] NCCL INFO P2P Chunksize set to 131072
+3740aca24e6c:4007:4007 [1] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so. 
+3740aca24e6c:4006:4006 [0] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so. 
+3740aca24e6c:4006:4006 [0] NCCL INFO Check P2P Type isAllDirectP2p 1 directMode 0
+3740aca24e6c:4007:4007 [1] NCCL INFO UDS: Creating service thread comm 0x56446dcc1150 rank 1
+3740aca24e6c:4006:4006 [0] NCCL INFO UDS: Creating service thread comm 0x619e6810afb0 rank 0
+3740aca24e6c:4006:4006 [0] NCCL INFO misc/utils.cc:233 memory stack hunk malloc(65536)
+3740aca24e6c:4007:4007 [1] NCCL INFO misc/utils.cc:233 memory stack hunk malloc(65536)
+3740aca24e6c:4006:4057 [0] NCCL INFO [Proxy Service UDS] Device 0 CPU core 5
+3740aca24e6c:4007:4058 [1] NCCL INFO [Proxy Service UDS] Device 1 CPU core 21
+3740aca24e6c:4006:4056 [0] NCCL INFO [Proxy Service] Device 0 CPU core 14
+3740aca24e6c:4007:4055 [1] NCCL INFO [Proxy Service] Device 1 CPU core 15
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:42 Cuda Alloc Size 1216 pointer 0x7ef5ae400000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:42 Cuda Alloc Size 1216 pointer 0x756344400000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:45 Cuda Alloc Size 40 pointer 0x756344600000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:45 Cuda Alloc Size 40 pointer 0x7ef5ae600000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:56 Cuda Alloc Size 8 pointer 0x756344800000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:56 Cuda Alloc Size 8 pointer 0x7ef5ae800000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:42 Cuda Alloc Size 1216 pointer 0x756344a00000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:42 Cuda Alloc Size 1216 pointer 0x7ef5aea00000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:45 Cuda Alloc Size 40 pointer 0x7ef5aec00000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:45 Cuda Alloc Size 40 pointer 0x756344c00000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:56 Cuda Alloc Size 8 pointer 0x756344e00000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:56 Cuda Alloc Size 8 pointer 0x7ef5aee00000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:42 Cuda Alloc Size 1216 pointer 0x756345000000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:42 Cuda Alloc Size 1216 pointer 0x7ef5af000000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:45 Cuda Alloc Size 40 pointer 0x756345200000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:45 Cuda Alloc Size 40 pointer 0x7ef5af200000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:56 Cuda Alloc Size 8 pointer 0x756345400000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:56 Cuda Alloc Size 8 pointer 0x7ef5af400000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:42 Cuda Alloc Size 1216 pointer 0x756345600000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:42 Cuda Alloc Size 1216 pointer 0x7ef5af600000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:45 Cuda Alloc Size 40 pointer 0x756345800000
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:45 Cuda Alloc Size 40 pointer 0x7ef5af800000
+3740aca24e6c:4006:4006 [0] NCCL INFO channel.cc:56 Cuda Alloc Size 8 pointer 0x756345a00000
+3740aca24e6c:4006:4006 [0] NCCL INFO   Algorithm   |                            Tree                  |                            Ring                  |                   CollNetDirect                  |
+3740aca24e6c:4006:4006 [0] NCCL INFO   Protocol    |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |
+3740aca24e6c:4006:4006 [0] NCCL INFO  Max NThreads |            512 |            640 |            512 |            512 |            640 |            512 |              0 |              0 |            640 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     Broadcast |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     7.6/  12.0 |    16.5/   0.0 |    14.1/  24.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO        Reduce |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     7.6/  12.0 |    16.5/   0.0 |    14.1/  24.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     AllGather |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     7.6/  24.0 |    16.5/   0.0 |    14.1/  48.0 |     0.8/   0.0 |     0.8/   0.0 |    39.2/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO ReduceScatter |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     7.6/  24.0 |    16.5/   0.0 |    14.1/  48.0 |     0.8/   0.0 |     0.8/   0.0 |    39.2/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     AllReduce |     8.8/   4.8 |    17.8/   0.0 |    16.4/  18.4 |     8.6/  12.0 |    19.0/   0.0 |    19.8/  24.0 |     0.8/   0.0 |     0.8/   0.0 |    39.2/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO   Algorithm   |                    CollNetChain                  |                            NVLS                  |                        NVLSTree                  |
+3740aca24e6c:4006:4006 [0] NCCL INFO   Protocol    |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |
+3740aca24e6c:4007:4007 [1] NCCL INFO channel.cc:56 Cuda Alloc Size 8 pointer 0x7ef5afa00000
+3740aca24e6c:4006:4006 [0] NCCL INFO  Max NThreads |              0 |              0 |            640 |              0 |              0 |            640 |              0 |              0 |            640 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     Broadcast |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO        Reduce |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     AllGather |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4007:4007 [1] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 512 | 512
+3740aca24e6c:4007:4007 [1] NCCL INFO 4 coll channels, 4 collnet channels, 0 nvls channels, 4 p2p channels, 2 p2p channels per peer
+3740aca24e6c:4006:4006 [0] NCCL INFO ReduceScatter |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     AllReduce |     0.0/   0.0 |     0.0/   0.0 |    35.6/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO   Algorithm   |                             PAT                  |
+3740aca24e6c:4006:4006 [0] NCCL INFO   Protocol    |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |
+3740aca24e6c:4006:4006 [0] NCCL INFO  Max NThreads |              0 |              0 |              0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     Broadcast |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO        Reduce |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     AllGather |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO ReduceScatter |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO     AllReduce |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+3740aca24e6c:4006:4006 [0] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 512 | 512
+3740aca24e6c:4006:4006 [0] NCCL INFO 4 coll channels, 4 collnet channels, 0 nvls channels, 4 p2p channels, 2 p2p channels per peer
+3740aca24e6c:4007:4007 [1] NCCL INFO init.cc:447 Cuda Alloc Size 23648 pointer 0x7ef5afc00000
+3740aca24e6c:4006:4006 [0] NCCL INFO init.cc:447 Cuda Alloc Size 23648 pointer 0x756345c00000
+3740aca24e6c:4007:4007 [1] NCCL INFO init.cc:449 Cuda Alloc Size 8 pointer 0x7ef5afe00000
+3740aca24e6c:4006:4006 [0] NCCL INFO init.cc:449 Cuda Alloc Size 8 pointer 0x756345e00000
+3740aca24e6c:4006:4006 [0] NCCL INFO CC Off, workFifoBytes 1048576
+3740aca24e6c:4007:4007 [1] NCCL INFO init.cc:491 Cuda Host Alloc Size 1048576 pointer 0x7ef5abe00200
+3740aca24e6c:4007:4007 [1] NCCL INFO init.cc:501 Cuda Host Alloc Size 65536 pointer 0x7ef5abf00200
+3740aca24e6c:4007:4007 [1] NCCL INFO init.cc:502 Cuda Host Alloc Size 65536 pointer 0x7ef5abf10200
+3740aca24e6c:4006:4006 [0] NCCL INFO init.cc:491 Cuda Host Alloc Size 1048576 pointer 0x756341e00200
+3740aca24e6c:4006:4006 [0] NCCL INFO init.cc:501 Cuda Host Alloc Size 65536 pointer 0x756341f00200
+3740aca24e6c:4006:4006 [0] NCCL INFO init.cc:502 Cuda Host Alloc Size 65536 pointer 0x756341f10200
+3740aca24e6c:4006:4006 [0] NCCL INFO TUNER/Plugin: Could not find: libnccl-tuner.so. Using internal tuner plugin.
+3740aca24e6c:4006:4006 [0] NCCL INFO ncclCommInitRank comm 0x619e6810afb0 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 1000 commId 0xeaa49b3bca7c575b - Init COMPLETE
+3740aca24e6c:4006:4006 [0] NCCL INFO Init timings - ncclCommInitRank: rank 0 nranks 2 total 0.14 (kernels 0.12, alloc 0.00, bootstrap 0.00, allgathers 0.00, topo 0.01, graphs 0.00, connections 0.00, rest 0.00)
+3740aca24e6c:4007:4007 [1] NCCL INFO TUNER/Plugin: Could not find: libnccl-tuner.so. Using internal tuner plugin.
+3740aca24e6c:4007:4007 [1] NCCL INFO ncclCommInitRank comm 0x56446dcc1150 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId 2e000 commId 0xeaa49b3bca7c575b - Init COMPLETE
+3740aca24e6c:4007:4007 [1] NCCL INFO Init timings - ncclCommInitRank: rank 1 nranks 2 total 0.13 (kernels 0.11, alloc 0.00, bootstrap 0.01, allgathers 0.00, topo 0.01, graphs 0.00, connections 0.00, rest 0.00)
+3740aca24e6c:4006:4006 [0] NCCL INFO AllReduce: opCount 0 sendbuff 0x756346000000 recvbuff 0x756346000200 count 1 datatype 7 op 0 root 0 comm 0x619e6810afb0 [nranks=2] stream (nil)
+3740aca24e6c:4007:4007 [1] NCCL INFO AllReduce: opCount 0 sendbuff 0x7ef5b0000000 recvbuff 0x7ef5b0000200 count 1 datatype 7 op 0 root 0 comm 0x56446dcc1150 [nranks=2] stream (nil)
+3740aca24e6c:4007:4007 [1] NCCL INFO misc/utils.cc:233 memory stack hunk malloc(65536)
+3740aca24e6c:4006:4006 [0] NCCL INFO misc/utils.cc:233 memory stack hunk malloc(65536)
+3740aca24e6c:4006:4056 [0] NCCL INFO Mem Realloc old size 0, new size 8 pointer 0x7562dc004f20
+3740aca24e6c:4007:4055 [1] NCCL INFO Mem Realloc old size 0, new size 8 pointer 0x7ef550004f20
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy recv connection 0 from local rank 0, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7562dc004ee0 op.respSize=16 done
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy recv connection 0 from local rank 1, transport 0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7ef550004ee0 op.respSize=16 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef550004f40
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc004f40
+3740aca24e6c:4007:4055 [1] NCCL INFO Allocated shareable buffer 0x7ef5b0200000 size 10485760 ipcDesc 0x7ef550008b80
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=3 op.reqBuff=0x7ef550008b50 op.respSize=88 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Allocated shareable buffer 0x756346200000 size 10485760 ipcDesc 0x7562dc008b80
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=3 op.reqBuff=0x7562dc008b50 op.respSize=88 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy recv connection 1 from local rank 1, transport 0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7ef55000a490 op.respSize=16 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef550004fb8
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy recv connection 1 from local rank 0, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7562dc00a490 op.respSize=16 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc004fb8
+3740aca24e6c:4007:4055 [1] NCCL INFO Allocated shareable buffer 0x7ef5b0c00000 size 10485760 ipcDesc 0x7ef55000a500
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=3 op.reqBuff=0x7ef55000a4d0 op.respSize=88 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy recv connection 2 from local rank 1, transport 0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7ef55000bbd0 op.respSize=16 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef550005030
+3740aca24e6c:4006:4056 [0] NCCL INFO Allocated shareable buffer 0x756346c00000 size 10485760 ipcDesc 0x7562dc00a500
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=3 op.reqBuff=0x7562dc00a4d0 op.respSize=88 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy recv connection 2 from local rank 0, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7562dc00bbd0 op.respSize=16 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc005030
+3740aca24e6c:4007:4055 [1] NCCL INFO Allocated shareable buffer 0x7ef5b1600000 size 10485760 ipcDesc 0x7ef55000bc20
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=3 op.reqBuff=0x7ef55000bbf0 op.respSize=88 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy recv connection 3 from local rank 1, transport 0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7ef55000bbf0 op.respSize=16 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef5500050a8
+3740aca24e6c:4006:4056 [0] NCCL INFO Allocated shareable buffer 0x756347600000 size 10485760 ipcDesc 0x7562dc00bc20
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=3 op.reqBuff=0x7562dc00bbf0 op.respSize=88 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy recv connection 3 from local rank 0, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7562dc00bbf0 op.respSize=16 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4007:4055 [1] NCCL INFO Allocated shareable buffer 0x7ef5b2000000 size 10485760 ipcDesc 0x7ef55000d320
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=3 op.reqBuff=0x7ef55000d2f0 op.respSize=88 done
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc0050a8
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Channel 00/0 : 1[1] -> 0[0] via P2P/CUMEM
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy send connection 4 from local rank 1, transport 0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7ef55000d2f0 op.respSize=16 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef550005120
+3740aca24e6c:4006:4056 [0] NCCL INFO Allocated shareable buffer 0x756348000000 size 10485760 ipcDesc 0x7562dc00d320
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=3 op.reqBuff=0x7562dc00d2f0 op.respSize=88 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Channel 00/0 : 0[0] -> 1[1] via P2P/CUMEM
+3740aca24e6c:4007:4055 [1] NCCL INFO Allocated shareable buffer 0x7ef5b2a00000 size 2097152 ipcDesc 0x7ef55000ea00
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=3 op.reqBuff=0x7ef55000e9d0 op.respSize=88 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Channel 01/0 : 1[1] -> 0[0] via P2P/CUMEM
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy send connection 4 from local rank 0, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7562dc00d2f0 op.respSize=16 done
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy send connection 5 from local rank 1, transport 0
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7ef55000e9d0 op.respSize=16 done
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc005120
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef550005198
+3740aca24e6c:4006:4056 [0] NCCL INFO Allocated shareable buffer 0x756348a00000 size 2097152 ipcDesc 0x7562dc00ea00
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=3 op.reqBuff=0x7562dc00e9d0 op.respSize=88 done
+3740aca24e6c:4007:4055 [1] NCCL INFO Allocated shareable buffer 0x7ef5b2c00000 size 2097152 ipcDesc 0x7ef5500100e0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=3 op.reqBuff=0x7ef5500100b0 op.respSize=88 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Channel 01/0 : 0[0] -> 1[1] via P2P/CUMEM
+3740aca24e6c:4007:4060 [1] NCCL INFO Channel 02/0 : 1[1] -> 0[0] via P2P/CUMEM
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy send connection 6 from local rank 1, transport 0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7ef5500100b0 op.respSize=16 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy send connection 5 from local rank 0, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7562dc00e9d0 op.respSize=16 done
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef550005210
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc005198
+3740aca24e6c:4007:4055 [1] NCCL INFO Allocated shareable buffer 0x7ef5b2e00000 size 2097152 ipcDesc 0x7ef5500117c0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=3 op.reqBuff=0x7ef550011790 op.respSize=88 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Channel 03/0 : 1[1] -> 0[0] via P2P/CUMEM
+3740aca24e6c:4006:4056 [0] NCCL INFO Allocated shareable buffer 0x756348c00000 size 2097152 ipcDesc 0x7562dc0100e0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=3 op.reqBuff=0x7562dc0100b0 op.respSize=88 done
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy send connection 7 from local rank 1, transport 0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7ef550011790 op.respSize=16 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef550005288
+3740aca24e6c:4006:4059 [0] NCCL INFO Channel 02/0 : 0[0] -> 1[1] via P2P/CUMEM
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy send connection 6 from local rank 0, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7562dc0100b0 op.respSize=16 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc005210
+3740aca24e6c:4007:4055 [1] NCCL INFO Allocated shareable buffer 0x7ef5b3000000 size 2097152 ipcDesc 0x7ef550012ea0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=3 op.reqBuff=0x7ef550012e70 op.respSize=88 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Allocated shareable buffer 0x756348e00000 size 2097152 ipcDesc 0x7562dc0117c0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=3 op.reqBuff=0x7562dc011790 op.respSize=88 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Channel 03/0 : 0[0] -> 1[1] via P2P/CUMEM
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy send connection 7 from local rank 0, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7562dc011790 op.respSize=16 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc005288
+3740aca24e6c:4006:4056 [0] NCCL INFO Allocated shareable buffer 0x756349000000 size 2097152 ipcDesc 0x7562dc012ea0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=3 op.reqBuff=0x7562dc012e70 op.respSize=88 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Setup res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4006:4056 [0] NCCL INFO New proxy send connection 8 from local rank 1, transport 0
+3740aca24e6c:4006:4056 [0] NCCL INFO proxyProgressAsync opId=0x7ef54800dd90 op.type=1 op.reqBuff=0x7562dc012e70 op.respSize=16 done
+3740aca24e6c:4007:4060 [1] NCCL INFO ncclPollProxyResponse Received new opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO resp.opId=0x7ef54800dd90 matches expected opId=0x7ef54800dd90
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected to proxy localRank 0 -> connection 0x7562dc005300
+3740aca24e6c:4006:4056 [0] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4007:4055 [1] NCCL INFO New proxy send connection 8 from local rank 0, transport 0
+3740aca24e6c:4007:4055 [1] NCCL INFO proxyProgressAsync opId=0x7562e000dd90 op.type=1 op.reqBuff=0x7ef550012e70 op.respSize=16 done
+3740aca24e6c:4006:4059 [0] NCCL INFO ncclPollProxyResponse Received new opId=0x7562e000dd90
+3740aca24e6c:4006:4059 [0] NCCL INFO resp.opId=0x7562e000dd90 matches expected opId=0x7562e000dd90
+3740aca24e6c:4007:4055 [1] NCCL INFO Received and initiated operation=Init res=0
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected to proxy localRank 1 -> connection 0x7ef550005300
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 0x7ef55dedfb18 opId 0x8de6f2c75d8712b2
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 0x7562f1187b18 opId 0x6a4fa443dad769d9
+3740aca24e6c:4006:4057 [0] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 1 opId 0x8de6f2c75d8712b2 handle=0x7562dc008bd0
+3740aca24e6c:4006:4057 [0] NCCL INFO UDS proxyGetFd received handle 0x7562dc008bd0 peer 1 opId 8de6f2c75d8712b2
+3740aca24e6c:4007:4058 [1] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 0 opId 0x6a4fa443dad769d9 handle=0x7ef550008bd0
+3740aca24e6c:4007:4058 [1] NCCL INFO UDS proxyGetFd received handle 0x7ef550008bd0 peer 0 opId 6a4fa443dad769d9
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 101 opId 0x8de6f2c75d8712b2 - DONE
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS: ClientGetFd handle 0x7562dc008bd0 tpRank 0 returned fd 101 sameProcess 0
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS converted handle 0x7562dc008bd0 to fd 101 on remote peer 0
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 109 opId 0x6a4fa443dad769d9 - DONE
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS: ClientGetFd handle 0x7ef550008bd0 tpRank 1 returned fd 109 sameProcess 0
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS converted handle 0x7ef550008bd0 to fd 109 on remote peer 1
+3740aca24e6c:4006:4059 [0] NCCL INFO Imported shareable buffer device 0 size 10485760 ptr 0x756349200000
+3740aca24e6c:4007:4060 [1] NCCL INFO Imported shareable buffer device 1 size 10485760 ptr 0x7ef5b3200000
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 0x7562f1187b08 opId 0xebb2c6dcc6abe5b2
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 0x7ef55dedfb08 opId 0x57bc57e0c934b939
+3740aca24e6c:4007:4058 [1] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 0 opId 0xebb2c6dcc6abe5b2 handle=0x7ef55000ea50
+3740aca24e6c:4007:4058 [1] NCCL INFO UDS proxyGetFd received handle 0x7ef55000ea50 peer 0 opId ebb2c6dcc6abe5b2
+3740aca24e6c:4006:4057 [0] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 1 opId 0x57bc57e0c934b939 handle=0x7562dc00ea50
+3740aca24e6c:4006:4057 [0] NCCL INFO UDS proxyGetFd received handle 0x7562dc00ea50 peer 1 opId 57bc57e0c934b939
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 111 opId 0xebb2c6dcc6abe5b2 - DONE
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS: ClientGetFd handle 0x7ef55000ea50 tpRank 1 returned fd 111 sameProcess 0
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS converted handle 0x7ef55000ea50 to fd 111 on remote peer 1
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 99 opId 0x57bc57e0c934b939 - DONE
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS: ClientGetFd handle 0x7562dc00ea50 tpRank 0 returned fd 99 sameProcess 0
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS converted handle 0x7562dc00ea50 to fd 99 on remote peer 0
+3740aca24e6c:4006:4059 [0] NCCL INFO Imported shareable buffer device 0 size 2097152 ptr 0x756349c00000
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 0x7562f1187b18 opId 0x4f2f9ddc232840e0
+3740aca24e6c:4007:4060 [1] NCCL INFO Imported shareable buffer device 1 size 2097152 ptr 0x7ef5b3c00000
+3740aca24e6c:4007:4058 [1] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 0 opId 0x4f2f9ddc232840e0 handle=0x7ef55000a550
+3740aca24e6c:4007:4058 [1] NCCL INFO UDS proxyGetFd received handle 0x7ef55000a550 peer 0 opId 4f2f9ddc232840e0
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 0x7ef55dedfb18 opId 0xd6f1c3c53b859efe
+3740aca24e6c:4006:4057 [0] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 1 opId 0xd6f1c3c53b859efe handle=0x7562dc00a550
+3740aca24e6c:4006:4057 [0] NCCL INFO UDS proxyGetFd received handle 0x7562dc00a550 peer 1 opId d6f1c3c53b859efe
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 111 opId 0x4f2f9ddc232840e0 - DONE
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS: ClientGetFd handle 0x7ef55000a550 tpRank 1 returned fd 111 sameProcess 0
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS converted handle 0x7ef55000a550 to fd 111 on remote peer 1
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 100 opId 0xd6f1c3c53b859efe - DONE
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS: ClientGetFd handle 0x7562dc00a550 tpRank 0 returned fd 100 sameProcess 0
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS converted handle 0x7562dc00a550 to fd 100 on remote peer 0
+3740aca24e6c:4007:4060 [1] NCCL INFO Imported shareable buffer device 1 size 10485760 ptr 0x7ef5b3e00000
+3740aca24e6c:4006:4059 [0] NCCL INFO Imported shareable buffer device 0 size 10485760 ptr 0x756349e00000
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 0x7ef55dedfb08 opId 0x6abd1cfc78bcab5c
+3740aca24e6c:4006:4057 [0] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 1 opId 0x6abd1cfc78bcab5c handle=0x7562dc010130
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 0x7562f1187b08 opId 0x14955f67a3376f2b
+3740aca24e6c:4006:4057 [0] NCCL INFO UDS proxyGetFd received handle 0x7562dc010130 peer 1 opId 6abd1cfc78bcab5c
+3740aca24e6c:4007:4058 [1] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 0 opId 0x14955f67a3376f2b handle=0x7ef550010130
+3740aca24e6c:4007:4058 [1] NCCL INFO UDS proxyGetFd received handle 0x7ef550010130 peer 0 opId 14955f67a3376f2b
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 100 opId 0x6abd1cfc78bcab5c - DONE
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS: ClientGetFd handle 0x7562dc010130 tpRank 0 returned fd 100 sameProcess 0
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS converted handle 0x7562dc010130 to fd 100 on remote peer 0
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 110 opId 0x14955f67a3376f2b - DONE
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS: ClientGetFd handle 0x7ef550010130 tpRank 1 returned fd 110 sameProcess 0
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS converted handle 0x7ef550010130 to fd 110 on remote peer 1
+3740aca24e6c:4007:4060 [1] NCCL INFO Imported shareable buffer device 1 size 2097152 ptr 0x7ef5b4800000
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 0x7ef55dedfb18 opId 0xb67edf2f32ea9885
+3740aca24e6c:4006:4057 [0] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 1 opId 0xb67edf2f32ea9885 handle=0x7562dc00bc70
+3740aca24e6c:4006:4057 [0] NCCL INFO UDS proxyGetFd received handle 0x7562dc00bc70 peer 1 opId b67edf2f32ea9885
+3740aca24e6c:4006:4059 [0] NCCL INFO Imported shareable buffer device 0 size 2097152 ptr 0x75634a800000
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 0x7562f1187b18 opId 0x34c1683b0407fd07
+3740aca24e6c:4007:4058 [1] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 0 opId 0x34c1683b0407fd07 handle=0x7ef55000bc70
+3740aca24e6c:4007:4058 [1] NCCL INFO UDS proxyGetFd received handle 0x7ef55000bc70 peer 0 opId 34c1683b0407fd07
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 100 opId 0xb67edf2f32ea9885 - DONE
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS: ClientGetFd handle 0x7562dc00bc70 tpRank 0 returned fd 100 sameProcess 0
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS converted handle 0x7562dc00bc70 to fd 100 on remote peer 0
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 109 opId 0x34c1683b0407fd07 - DONE
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS: ClientGetFd handle 0x7ef55000bc70 tpRank 1 returned fd 109 sameProcess 0
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS converted handle 0x7ef55000bc70 to fd 109 on remote peer 1
+3740aca24e6c:4007:4060 [1] NCCL INFO Imported shareable buffer device 1 size 10485760 ptr 0x7ef5b4a00000
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 0x7ef55dedfb08 opId 0xb47127fe72cc9b61
+3740aca24e6c:4006:4057 [0] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 1 opId 0xb47127fe72cc9b61 handle=0x7562dc011810
+3740aca24e6c:4006:4057 [0] NCCL INFO UDS proxyGetFd received handle 0x7562dc011810 peer 1 opId b47127fe72cc9b61
+3740aca24e6c:4006:4059 [0] NCCL INFO Imported shareable buffer device 0 size 10485760 ptr 0x75634aa00000
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 0x7562f1187b08 opId 0xf3c082141a35dbaf
+3740aca24e6c:4007:4058 [1] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 0 opId 0xf3c082141a35dbaf handle=0x7ef550011810
+3740aca24e6c:4007:4058 [1] NCCL INFO UDS proxyGetFd received handle 0x7ef550011810 peer 0 opId f3c082141a35dbaf
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 100 opId 0xb47127fe72cc9b61 - DONE
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS: ClientGetFd handle 0x7562dc011810 tpRank 0 returned fd 100 sameProcess 0
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS converted handle 0x7562dc011810 to fd 100 on remote peer 0
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 109 opId 0xf3c082141a35dbaf - DONE
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS: ClientGetFd handle 0x7ef550011810 tpRank 1 returned fd 109 sameProcess 0
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS converted handle 0x7ef550011810 to fd 109 on remote peer 1
+3740aca24e6c:4007:4060 [1] NCCL INFO Imported shareable buffer device 1 size 2097152 ptr 0x7ef5b5400000
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 0x7ef55dedfb18 opId 0x4216a245dbdb36d5
+3740aca24e6c:4006:4057 [0] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 1 opId 0x4216a245dbdb36d5 handle=0x7562dc00d370
+3740aca24e6c:4006:4057 [0] NCCL INFO UDS proxyGetFd received handle 0x7562dc00d370 peer 1 opId 4216a245dbdb36d5
+3740aca24e6c:4006:4059 [0] NCCL INFO Imported shareable buffer device 0 size 2097152 ptr 0x75634b400000
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 0x7562f1187b18 opId 0xc4a61d081a66d53a
+3740aca24e6c:4007:4058 [1] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 0 opId 0xc4a61d081a66d53a handle=0x7ef55000d370
+3740aca24e6c:4007:4058 [1] NCCL INFO UDS proxyGetFd received handle 0x7ef55000d370 peer 0 opId c4a61d081a66d53a
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 100 opId 0x4216a245dbdb36d5 - DONE
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS: ClientGetFd handle 0x7562dc00d370 tpRank 0 returned fd 100 sameProcess 0
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS converted handle 0x7562dc00d370 to fd 100 on remote peer 0
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 109 opId 0xc4a61d081a66d53a - DONE
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS: ClientGetFd handle 0x7ef55000d370 tpRank 1 returned fd 109 sameProcess 0
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS converted handle 0x7ef55000d370 to fd 109 on remote peer 1
+3740aca24e6c:4007:4060 [1] NCCL INFO Imported shareable buffer device 1 size 10485760 ptr 0x7ef5b5600000
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 0x7ef55dedfb08 opId 0xcc6f5e33eb2263c1
+3740aca24e6c:4006:4057 [0] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 1 opId 0xcc6f5e33eb2263c1 handle=0x7562dc012ef0
+3740aca24e6c:4006:4057 [0] NCCL INFO UDS proxyGetFd received handle 0x7562dc012ef0 peer 1 opId cc6f5e33eb2263c1
+3740aca24e6c:4006:4059 [0] NCCL INFO Imported shareable buffer device 0 size 10485760 ptr 0x75634b600000
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 0x7562f1187b08 opId 0xcb379a0e9fcda0e
+3740aca24e6c:4007:4058 [1] NCCL INFO proxyUDSRecvReq::ncclProxyMsgGetFd rank 0 opId 0xcb379a0e9fcda0e handle=0x7ef550012ef0
+3740aca24e6c:4007:4058 [1] NCCL INFO UDS proxyGetFd received handle 0x7ef550012ef0 peer 0 opId cb379a0e9fcda0e
+3740aca24e6c:4007:4060 [1] NCCL INFO ProxyCall UDS comm 0x56446dcc1150 rank 1 tpRank 0(8fa3588d721b2c8e) reqSize 8 respSize 0 respFd 100 opId 0xcc6f5e33eb2263c1 - DONE
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS: ClientGetFd handle 0x7562dc012ef0 tpRank 0 returned fd 100 sameProcess 0
+3740aca24e6c:4007:4060 [1] NCCL INFO UDS converted handle 0x7562dc012ef0 to fd 100 on remote peer 0
+3740aca24e6c:4006:4059 [0] NCCL INFO ProxyCall UDS comm 0x619e6810afb0 rank 0 tpRank 1(cdcd9aec98451018) reqSize 8 respSize 0 respFd 109 opId 0xcb379a0e9fcda0e - DONE
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS: ClientGetFd handle 0x7ef550012ef0 tpRank 1 returned fd 109 sameProcess 0
+3740aca24e6c:4006:4059 [0] NCCL INFO UDS converted handle 0x7ef550012ef0 to fd 109 on remote peer 1
+3740aca24e6c:4007:4060 [1] NCCL INFO Imported shareable buffer device 1 size 2097152 ptr 0x7ef5b6000000
+3740aca24e6c:4006:4059 [0] NCCL INFO Imported shareable buffer device 0 size 2097152 ptr 0x75634c000000
+3740aca24e6c:4007:4060 [1] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+3740aca24e6c:4006:4059 [0] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+3740aca24e6c:4006:4006 [0] NCCL INFO AllReduce: 4 Bytes -> Algo RING proto LL channel{Lo..Hi}={0..0}
